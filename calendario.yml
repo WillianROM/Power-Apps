@@ -1,0 +1,249 @@
+Screens:
+  ScreenCalendario:
+    Properties:
+      Fill: =RGBA(255,255,255,1)
+      LoadingSpinnerColor: =RGBA(211, 66, 9, 1)
+    Children:
+      - ScreenCalendario_glrCalendario:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            BorderColor: =RGBA(211, 66, 9, 1)
+            BorderThickness: =1
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =676
+            Items: =Sequence(42)
+            TemplateFill: |+
+              = With({PrimeiroDiaDoMes: DateValue("01/" & Mes & "/" & Ano)},
+
+                  With({DiaDaSemanaDoPrimeiroDiaDoMes: Weekday(DateValue(PrimeiroDiaDoMes),StartOfWeek.Sunday)},
+                      // Se o dia for hoje
+                      If(DateValue(PrimeiroDiaDoMes + ThisItem.Value - DiaDaSemanaDoPrimeiroDiaDoMes) = Today() ,
+                          RGBA(241,198,181,1),
+                          // Se o dia está dentro do mês
+                          If(Month(PrimeiroDiaDoMes + ThisItem.Value - DiaDaSemanaDoPrimeiroDiaDoMes) & "/" & Year(PrimeiroDiaDoMes + ThisItem.Value - DiaDaSemanaDoPrimeiroDiaDoMes) = Month(DateValue("01/" & Mes & "/" & Ano)) & "/" & Year(DateValue("01/" & Mes & "/" & Ano)),
+                                  RGBA(255, 255, 255, 0),
+                                  RGBA(127, 127, 127, 0.5)
+                          )
+                     )
+
+                  )
+
+               )
+
+            TemplatePadding: |+
+              =0
+            TemplateSize: =112
+            Width: =1366
+            WrapCount: =7
+            Y: =92
+          Children:
+            - ScreenCalendario_glrEdital:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Height: =93
+                  Items: |+
+                    =
+
+                  TemplatePadding: |+
+                    =0
+                  TemplateSize: =53
+                  Width: =ScreenCalendario_glrCalendario.TemplateWidth
+                  X: =2
+                  Y: =19
+                Children:
+                  - ScreenCalendario_glrEditalLblEdital:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(131, 24, 75, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =53
+                        OnSelect: =Select(Parent)
+                        Size: =10
+                        Text: |+
+                          =With(
+                              {
+                                  itemStatus: LookUp(colEditaisEmCaptacao, ID_ACOMPANHAMENTO_PROCESSOS = ThisItem.ID)
+                              },
+
+                              "Cidade: " & itemStatus.Cidade & " | UF: " & itemStatus.UF.Value & "
+                          Ref. Edital: " & itemStatus.Ref_Edital
+                          )
+                        Width: =Parent.Width
+                  - Rectangle3:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(131, 24, 75, 1)
+                        Fill: =RGBA(211, 66, 9, 1)
+                        Height: =1
+                        OnSelect: =Select(Parent)
+                        Width: =ScreenCalendario_glrEdital.TemplateWidth
+                        Y: =52
+            - ScreenCalendario_lblDia:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Font: =Font.'Open Sans'
+                  Height: =19
+                  OnSelect: =Select(Parent)
+                  Size: =10
+                  Text: |+
+                    = With({PrimeiroDiaDoMes: DateValue("01/" & Mes & "/" & Ano)},
+
+                        With({DiaDaSemanaDoPrimeiroDiaDoMes: Weekday(DateValue(PrimeiroDiaDoMes),StartOfWeek.Sunday)},
+
+                            Day(PrimeiroDiaDoMes + ThisItem.Value - DiaDaSemanaDoPrimeiroDiaDoMes)
+
+                        )
+
+                     )
+                  Width: =27
+            - Rectangle4:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Fill: =RGBA(211, 66, 9, 1)
+                  Height: =2
+                  OnSelect: =Select(Parent)
+                  Width: =ScreenCalendario_glrCalendario.TemplateWidth
+                  X: =
+                  Y: =ScreenCalendario_glrCalendario.TemplateHeight
+            - Rectangle6:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Fill: =RGBA(211, 66, 9, 1)
+                  Height: =ScreenCalendario_glrCalendario.TemplateHeight
+                  OnSelect: =Select(Parent)
+                  Width: =2
+            - Rectangle1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Fill: =RGBA(211, 66, 9, 1)
+                  Height: =2
+                  OnSelect: =Select(Parent)
+                  Width: =ScreenCalendario_glrCalendario.TemplateWidth
+                  X: |+
+                    =0
+                  Y: =1
+      - ScreenCalendario_glrDiasDaSemana:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            BorderColor: =RGBA(131, 24, 75, 1)
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =38
+            Items: =Calendar.WeekdaysShort()
+            TemplateSize: =183
+            Width: =1366
+            Y: =48
+          Children:
+            - ScreenCalendario_lblDiaDaSemana:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(131, 24, 75, 1)
+                  Font: =Font.'Open Sans'
+                  Height: =ScreenCalendario_glrDiasDaSemana.Height
+                  OnSelect: =Select(Parent)
+                  Text: =ThisItem.Value
+                  Width: =ScreenCalendario_glrDiasDaSemana.TemplateWidth
+                  X: |+
+                    =0
+      - ScreenCalendario_lblMesAno:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(131, 24, 75, 1)
+            Fill: =RGBA(255, 255, 255, 1)
+            Font: =Font.'Open Sans'
+            FontWeight: =FontWeight.Bold
+            Height: =43
+            Size: =20
+            Text: =Proper(Text(DateValue("01/" & Mes & "/" & Ano),"[$-pt-BR]mmmm")) & " de " & Ano
+            Width: =352
+            X: =Parent.Width/2 - Self.Width/2
+      - ScreenCalendario_DiminuirMes:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(131, 24, 75, 1)
+            Color: =RGBA(131, 24, 75, 1)
+            Height: =30
+            Icon: =Icon.ChevronLeft
+            OnSelect: |+
+              =UpdateContext(
+                  {
+                      Mes: Month(DateAdd(DateValue("01/" & Mes & "/" & Ano),-1,TimeUnit.Months)),
+                      Ano: Year(DateAdd(DateValue("01/" & Mes & "/" & Ano),-1,TimeUnit.Months))
+                  }
+              )
+            Width: =44
+            X: =1243
+            Y: =6
+      - ScreenCalendario_AvancarMes:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(131, 24, 75, 1)
+            Color: =RGBA(131, 24, 75, 1)
+            Height: =30
+            Icon: =Icon.ChevronRight
+            OnSelect: |+
+              =UpdateContext(
+                  {
+                      Mes: Month(DateAdd(DateValue("01/" & Mes & "/" & Ano),1,TimeUnit.Months)),
+                      Ano: Year(DateAdd(DateValue("01/" & Mes & "/" & Ano),1,TimeUnit.Months))
+                  }
+              )
+            Width: =44
+            X: =1287
+            Y: =6
+      - ScreenCalendario_btnHoje:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(166, 166, 166, 1)
+            Fill: =RGBA(211, 66, 9, 1)
+            Font: =Font.'Open Sans'
+            Height: =30
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(211, 66, 9, 1), -20%)
+            OnSelect: |-
+              =UpdateContext(
+                  {
+                      Mes: Month(Today()),
+                      Ano: Year(Today())
+                  }
+              );
+            PressedBorderColor: =Self.Fill
+            PressedColor: =Self.Fill
+            PressedFill: =Self.Color
+            Text: ="Hoje"
+            Width: =82
+            X: =1139
+            Y: =6
+      - ScreenCalendario_iconVoltar:
+          Control: Arrow@2.3.0
+          Variant: BackArrow
+          Properties:
+            BorderColor: =RGBA(131, 24, 75, 1)
+            Fill: =RGBA(131, 24, 75, 1)
+            HoverFill: =RGBA(255, 191, 0, 1)
+            OnSelect: =Back()
+            PressedFill: =
+            X: =50
+            Y: =9
+      - ScreenCalendario_Spinner:
+          Control: Spinner@1.4.5
+          Properties:
+            Appearance: ='Spinner.Appearance'.Inverted
+            Height: =Parent.Height
+            Label: ="Carregando os dados..."
+            SpinnerSize: ='Spinner.SpinnerSize'.Huge
+            Visible: =
+            Width: =Parent.Width
